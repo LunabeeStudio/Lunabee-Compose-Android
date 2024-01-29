@@ -30,7 +30,7 @@ abstract class SnapshotTask : DefaultTask() {
     fun setSnapshotVersion() {
         val file = File(project.rootDir.path + "/buildSrc/src/main/kotlin/AndroidConfig.kt")
         val newContents = file.readText().replace(Regex("${project.properties["libName"]}: String = \"[^\"]*")) { matchResult ->
-            "${matchResult.value}-${project.properties["counter"]}-SNAPSHOT"
+            "${matchResult.value}.${project.properties["counter"]}-SNAPSHOT"
         }
         file.writeText(newContents)
 
