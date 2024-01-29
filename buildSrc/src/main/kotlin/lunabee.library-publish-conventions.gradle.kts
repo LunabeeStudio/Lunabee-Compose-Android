@@ -54,12 +54,6 @@ project.extensions.configure<PublishingExtension>("publishing") {
  * Credentials should be stored in your root gradle.properties, in a non source controlled file.
  */
 fun PublishingExtension.setupMavenRepository() {
-    // The Artifactory repository key to publish to
-    val repoPath = if (project.version.toString().endsWith("-SNAPSHOT")) {
-        "content/repositories/snapshots/"
-    } else {
-        "service/local/staging/deploy/maven2/"
-    }
     repositories {
         maven {
             authentication {
@@ -68,7 +62,7 @@ fun PublishingExtension.setupMavenRepository() {
                 credentials.password = project.properties["sonatypePassword"]?.toString()
                     ?: System.getenv("SONATYPE_PASSWORD")
             }
-            url = URI.create("https://s01.oss.sonatype.org/$repoPath")
+            url = URI.create(properties["publishing.url"]?.toString() ?: "https://s01.oss.sonatype.org/content/repositories/snapshots/")
         }
     }
 }
