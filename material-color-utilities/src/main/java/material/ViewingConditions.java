@@ -1,22 +1,17 @@
 /*
- * Copyright © 2022 Lunabee Studio
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * ViewingConditions.java
- * Lunabee Compose
- *
- * Created by Lunabee Studio / Date - 10/21/2022 - for the Lunabee Compose library.
  */
 
 package material;
@@ -37,16 +32,7 @@ public final class ViewingConditions {
      * sRGB-like viewing conditions.
      */
     public static final ViewingConditions DEFAULT =
-            ViewingConditions.make(
-                    new double[]{
-                            ColorUtils.whitePointD65()[0],
-                            ColorUtils.whitePointD65()[1],
-                            ColorUtils.whitePointD65()[2]
-                    },
-                    (200.0 / Math.PI * ColorUtils.yFromLstar(50.0) / 100.f),
-                    50.0,
-                    2.0,
-                    false);
+            ViewingConditions.defaultWithBackgroundLstar(50.0);
 
     private final double aw;
     private final double nbb;
@@ -117,12 +103,15 @@ public final class ViewingConditions {
      *                              such as knowing an apple is still red in green light. default = false, the eye does not
      *                              perform this process on self-luminous objects like displays.
      */
-    static ViewingConditions make(
+    public static ViewingConditions make(
             double[] whitePoint,
             double adaptingLuminance,
             double backgroundLstar,
             double surround,
             boolean discountingIlluminant) {
+        // A background of pure black is non-physical and leads to infinities that represent the idea
+        // that any color viewed in pure black can't be seen.
+        backgroundLstar = Math.max(0.1, backgroundLstar);
         // Transform white point XYZ to 'cone'/'rgb' responses
         double[][] matrix = Cam16.XYZ_TO_CAM16RGB;
         double[] xyz = whitePoint;
@@ -168,6 +157,20 @@ public final class ViewingConditions {
 
         double aw = ((2.0 * rgbA[0]) + rgbA[1] + (0.05 * rgbA[2])) * nbb;
         return new ViewingConditions(n, aw, nbb, ncb, c, nc, rgbD, fl, Math.pow(fl, 0.25), z);
+    }
+
+    /**
+     * Create sRGB-like viewing conditions with a custom background lstar.
+     *
+     * <p>Default viewing conditions have a lstar of 50, midgray.
+     */
+    public static ViewingConditions defaultWithBackgroundLstar(double lstar) {
+        return ViewingConditions.make(
+                ColorUtils.whitePointD65(),
+                (200.0 / Math.PI * ColorUtils.yFromLstar(50.0) / 100.f),
+                lstar,
+                2.0,
+                false);
     }
 
     /**

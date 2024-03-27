@@ -42,7 +42,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -70,10 +69,11 @@ fun ThemeScreen() {
         null
     }
 
+    val customColorScheme = customColor?.let {
+        LbcThemeUtilities.getMaterialColorSchemeFromColor(it, isInDarkMode = isSystemInDarkTheme())
+    }
     AppDemoTheme(
-        customColorScheme = customColor?.let {
-            LbcThemeUtilities.getMaterialColorSchemeFromColor(it, isInDarkMode = isSystemInDarkTheme())
-        },
+        customColorScheme = customColorScheme,
     ) {
         Column {
             Row(
@@ -98,6 +98,7 @@ fun ThemeScreen() {
                     BoxWithColorHex(
                         color = customColor,
                         modifier = Modifier.padding(top = 8.dp),
+                        name = "Seed",
                     )
 
                     Spacer(modifier = Modifier.width(16.dp))
@@ -106,18 +107,11 @@ fun ThemeScreen() {
                 BoxWithColorHex(
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(top = 8.dp),
+                    name = "Primary",
                 )
             }
 
-            val colorMap = mutableListOf<Pair<String, Color>>()
-            customColor?.let { colorMap += "Custom seed" to customColor }
-            ColorScheme::class.java.declaredFields.mapNotNullTo(colorMap) { field ->
-                field.isAccessible = true
-                @Suppress("unchecked_cast")
-                val color = (field.get(MaterialTheme.colorScheme) as? State<Color>)?.value
-                val colorName = field.name.substringBefore('$')
-                color?.let { colorName to color }
-            }
+            val colorMap = getPalette(customColor, MaterialTheme.colorScheme)
 
             LazyColumn(
                 modifier = Modifier
@@ -179,7 +173,8 @@ fun ThemeScreen() {
 fun BoxWithColorHex(
     color: Color,
     modifier: Modifier = Modifier,
-    innerText: (@Composable () -> Unit)? = null,
+    name: String? = null,
+    innerText: @Composable (() -> Unit)? = null,
 ) {
     Column(
         modifier = modifier,
@@ -196,8 +191,15 @@ fun BoxWithColorHex(
             innerText?.invoke()
         }
 
+        val colorText = buildString {
+            append(color.hexValue)
+            if (name != null) {
+                appendLine()
+                append(name)
+            }
+        }
         Text(
-            text = color.hexValue,
+            text = colorText,
             style = MaterialTheme.typography.bodySmall,
         )
     }
@@ -205,3 +207,19 @@ fun BoxWithColorHex(
 
 val Color.hexValue: String
     get() = String.format(locale = Locale.ROOT, format = "#%08X", toArgb())
+
+private fun getPalette(seed: Color?, colorScheme: ColorScheme): List<Pair<String, Color>> {
+    val colorMap = mutableListOf<Pair<String, Color>>()
+    ColorScheme::class.java.declaredFields.mapNotNullTo(colorMap) { field ->
+        field.isAccessible = true
+        val color = runCatching { Color((field.get(colorScheme) as Long).toULong()) }.getOrNull()
+        val colorName = field.name.substringBefore('$')
+        color?.let { colorName to color }
+    }
+    val primary = colorMap.firstOrNull { it.first.equals("primary", ignoreCase = true) }
+    val secondary = colorMap.firstOrNull { it.first.equals("secondary", ignoreCase = true) }
+    colorMap.remove(primary)
+    colorMap.remove(secondary)
+    colorMap.addAll(0, listOfNotNull(seed?.let { "Seed" to seed }, primary, secondary))
+    return colorMap
+}

@@ -1,22 +1,17 @@
 /*
- * Copyright © 2022 Lunabee Studio
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Cam16.java
- * Lunabee Compose
- *
- * Created by Lunabee Studio / Date - 10/21/2022 - for the Lunabee Compose library.
  */
 
 package material;
@@ -66,12 +61,15 @@ public final class Cam16 {
     private final double astar;
     private final double bstar;
 
+    // Avoid allocations during conversion by pre-allocating an array.
+    private final double[] tempArray = new double[] {0.0, 0.0, 0.0};
+
     /**
      * CAM16 instances also have coordinates in the CAM16-UCS space, called J*, a*, b*, or jstar,
      * astar, bstar in code. CAM16-UCS is included in the CAM16 specification, and is used to measure
      * distances between colors.
      */
-    double distance(Cam16 other) {
+    public double distance(Cam16 other) {
         double dJ = getJstar() - other.getJstar();
         double dA = getAstar() - other.getAstar();
         double dB = getBstar() - other.getBstar();
@@ -80,23 +78,17 @@ public final class Cam16 {
         return dE;
     }
 
-    /**
-     * Hue in CAM16
-     */
+    /** Hue in CAM16 */
     public double getHue() {
         return hue;
     }
 
-    /**
-     * Chroma in CAM16
-     */
+    /** Chroma in CAM16 */
     public double getChroma() {
         return chroma;
     }
 
-    /**
-     * Lightness in CAM16
-     */
+    /** Lightness in CAM16 */
     public double getJ() {
         return j;
     }
@@ -132,23 +124,17 @@ public final class Cam16 {
         return s;
     }
 
-    /**
-     * Lightness coordinate in CAM16-UCS
-     */
+    /** Lightness coordinate in CAM16-UCS */
     public double getJstar() {
         return jstar;
     }
 
-    /**
-     * a* coordinate in CAM16-UCS
-     */
+    /** a* coordinate in CAM16-UCS */
     public double getAstar() {
         return astar;
     }
 
-    /**
-     * b* coordinate in CAM16-UCS
-     */
+    /** b* coordinate in CAM16-UCS */
     public double getBstar() {
         return bstar;
     }
@@ -159,16 +145,16 @@ public final class Cam16 {
      * method that constructs from 3 of those dimensions. This constructor is intended for those
      * methods to use to return all possible dimensions.
      *
-     * @param hue    for example, red, orange, yellow, green, etc.
+     * @param hue for example, red, orange, yellow, green, etc.
      * @param chroma informally, colorfulness / color intensity. like saturation in HSL, except
-     *               perceptually accurate.
-     * @param j      lightness
-     * @param q      brightness; ratio of lightness to white point's lightness
-     * @param m      colorfulness
-     * @param s      saturation; ratio of chroma to white point's chroma
-     * @param jstar  CAM16-UCS J coordinate
-     * @param astar  CAM16-UCS a coordinate
-     * @param bstar  CAM16-UCS b coordinate
+     *     perceptually accurate.
+     * @param j lightness
+     * @param q brightness; ratio of lightness to white point's lightness
+     * @param m colorfulness
+     * @param s saturation; ratio of chroma to white point's chroma
+     * @param jstar CAM16-UCS J coordinate
+     * @param astar CAM16-UCS a coordinate
+     * @param bstar CAM16-UCS b coordinate
      */
     private Cam16(
             double hue,
@@ -203,7 +189,7 @@ public final class Cam16 {
     /**
      * Create a CAM16 color from a color in defined viewing conditions.
      *
-     * @param argb              ARGB representation of a color.
+     * @param argb ARGB representation of a color.
      * @param viewingConditions Information about the environment where the color was observed.
      */
     // The RGB => XYZ conversion matrix elements are derived scientific constants. While the values
@@ -222,6 +208,11 @@ public final class Cam16 {
         double y = 0.2126 * redL + 0.7152 * greenL + 0.0722 * blueL;
         double z = 0.01932141 * redL + 0.11916382 * greenL + 0.95034478 * blueL;
 
+        return fromXyzInViewingConditions(x, y, z, viewingConditions);
+    }
+
+    static Cam16 fromXyzInViewingConditions(
+            double x, double y, double z, ViewingConditions viewingConditions) {
         // Transform XYZ to 'cone'/'rgb' responses
         double[][] matrix = XYZ_TO_CAM16RGB;
         double rT = (x * matrix[0][0]) + (y * matrix[0][1]) + (z * matrix[0][2]);
@@ -307,9 +298,9 @@ public final class Cam16 {
     }
 
     /**
-     * @param j                 CAM16 lightness
-     * @param c                 CAM16 chroma
-     * @param h                 CAM16 hue
+     * @param j CAM16 lightness
+     * @param c CAM16 chroma
+     * @param h CAM16 hue
      * @param viewingConditions Information about the environment where the color was observed.
      */
     private static Cam16 fromJchInViewingConditions(
@@ -338,9 +329,9 @@ public final class Cam16 {
      *
      * @param jstar CAM16-UCS lightness.
      * @param astar CAM16-UCS a dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the Y
-     *              axis.
+     *     axis.
      * @param bstar CAM16-UCS b dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the X
-     *              axis.
+     *     axis.
      */
     public static Cam16 fromUcs(double jstar, double astar, double bstar) {
 
@@ -350,11 +341,11 @@ public final class Cam16 {
     /**
      * Create a CAM16 color from CAM16-UCS coordinates in defined viewing conditions.
      *
-     * @param jstar             CAM16-UCS lightness.
-     * @param astar             CAM16-UCS a dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the Y
-     *                          axis.
-     * @param bstar             CAM16-UCS b dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the X
-     *                          axis.
+     * @param jstar CAM16-UCS lightness.
+     * @param astar CAM16-UCS a dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the Y
+     *     axis.
+     * @param bstar CAM16-UCS b dimension. Like a* in L*a*b*, it is a Cartesian coordinate on the X
+     *     axis.
      * @param viewingConditions Information about the environment where the color was observed.
      */
     public static Cam16 fromUcsInViewingConditions(
@@ -386,6 +377,11 @@ public final class Cam16 {
      * @return ARGB representation of color
      */
     int viewed(ViewingConditions viewingConditions) {
+        double[] xyz = xyzInViewingConditions(viewingConditions, tempArray);
+        return ColorUtils.argbFromXyz(xyz[0], xyz[1], xyz[2]);
+    }
+
+    double[] xyzInViewingConditions(ViewingConditions viewingConditions, double[] returnArray) {
         double alpha =
                 (getChroma() == 0.0 || getJ() == 0.0) ? 0.0 : getChroma() / Math.sqrt(getJ() / 100.0);
 
@@ -429,6 +425,13 @@ public final class Cam16 {
         double y = (rF * matrix[1][0]) + (gF * matrix[1][1]) + (bF * matrix[1][2]);
         double z = (rF * matrix[2][0]) + (gF * matrix[2][1]) + (bF * matrix[2][2]);
 
-        return ColorUtils.argbFromXyz(x, y, z);
+        if (returnArray != null) {
+            returnArray[0] = x;
+            returnArray[1] = y;
+            returnArray[2] = z;
+            return returnArray;
+        } else {
+            return new double[] {x, y, z};
+        }
     }
 }

@@ -1,22 +1,17 @@
 /*
- * Copyright © 2022 Lunabee Studio
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- * Hct.java
- * Lunabee Compose
- *
- * Created by Lunabee Studio / Date - 10/21/2022 - for the Lunabee Compose library.
  */
 
 package material;
@@ -33,9 +28,6 @@ package material;
  * <p>Unlike contrast ratio, measuring contrast in L* is linear, and simple to calculate. A
  * difference of 40 in HCT tone guarantees a contrast ratio >= 3.0, and a difference of 50
  * guarantees a contrast ratio >= 4.5.
- */
-
-/**
  * HCT, hue, chroma, and tone. A color system that provides a perceptually accurate color
  * measurement system that can also accurately render what colors will appear as in different
  * lighting environments.
@@ -118,6 +110,36 @@ public final class Hct {
      */
     public void setTone(double newTone) {
         setInternalState(HctSolver.solveToInt(hue, chroma, newTone));
+    }
+
+    /**
+     * Translate a color into different ViewingConditions.
+     *
+     * <p>Colors change appearance. They look different with lights on versus off, the same color, as
+     * in hex code, on white looks different when on black. This is called color relativity, most
+     * famously explicated by Josef Albers in Interaction of Color.
+     *
+     * <p>In color science, color appearance models can account for this and calculate the appearance
+     * of a color in different settings. HCT is based on CAM16, a color appearance model, and uses it
+     * to make these calculations.
+     *
+     * <p>See ViewingConditions.make for parameters affecting color appearance.
+     */
+    public Hct inViewingConditions(ViewingConditions vc) {
+        // 1. Use CAM16 to find XYZ coordinates of color in specified VC.
+        Cam16 cam16 = Cam16.fromInt(toInt());
+        double[] viewedInVc = cam16.xyzInViewingConditions(vc, null);
+
+        // 2. Create CAM16 of those XYZ coordinates in default VC.
+        Cam16 recastInVc =
+                Cam16.fromXyzInViewingConditions(
+                        viewedInVc[0], viewedInVc[1], viewedInVc[2], ViewingConditions.DEFAULT);
+
+        // 3. Create HCT from:
+        // - CAM16 using default VC with XYZ coordinates in specified VC.
+        // - L* converted from Y in XYZ coordinates in specified VC.
+        return Hct.from(
+                recastInVc.getHue(), recastInVc.getChroma(), ColorUtils.lstarFromY(viewedInVc[1]));
     }
 
     private void setInternalState(int argb) {
