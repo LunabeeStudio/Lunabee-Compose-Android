@@ -34,7 +34,7 @@ android {
 }
 
 description = "A set of tools for Compose"
-version = AndroidConfig.LBC_CORE_VERSION
+version = AndroidConfig.LBCCORE_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))

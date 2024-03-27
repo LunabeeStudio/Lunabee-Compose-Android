@@ -32,7 +32,7 @@ android {
 }
 
 description = "Tools for developping android test"
-version = AndroidConfig.LBC_ANDROID_TEST_VERSION
+version = AndroidConfig.LBCANDROIDTEST_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))

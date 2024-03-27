@@ -34,7 +34,7 @@ android {
 }
 
 description = "Helper to perform haptics feedback from compose"
-version = AndroidConfig.LBC_HAPTIC_VERSION
+version = AndroidConfig.LBCHAPTIC_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))

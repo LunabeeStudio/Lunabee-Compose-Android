@@ -34,7 +34,7 @@ android {
 }
 
 description = "Function to build dynamic theme with Material3 algorithm"
-version = AndroidConfig.LBC_THEME_VERSION
+version = AndroidConfig.LBCTHEME_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))

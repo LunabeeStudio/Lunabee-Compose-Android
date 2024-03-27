@@ -34,7 +34,7 @@ android {
 }
 
 description = "A set of custom components from androidx.composable.foundation"
-version = AndroidConfig.LBC_FOUNDATION_VERSION
+version = AndroidConfig.LBCFOUNDATION_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))

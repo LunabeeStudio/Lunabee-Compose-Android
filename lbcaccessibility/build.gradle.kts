@@ -34,7 +34,7 @@ android {
 }
 
 description = "A set of methods and composable for accessibility"
-version = AndroidConfig.LBC_ACCESSIBILITY_VERSION
+version = AndroidConfig.LBCACCESSIBILITY_VERSION
 
 dependencies {
     implementation(platform(libs.compose.bom))
