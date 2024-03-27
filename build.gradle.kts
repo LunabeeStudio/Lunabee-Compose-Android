@@ -62,3 +62,12 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt> {
         html.outputLocation.set(file("${layout.buildDirectory.asFile.get().path}/reports/detekt/detekt-report.html"))
     }
 }
+
+tasks.create("publishList") {
+    doLast {
+        val publishProjects = project.allprojects.filter {
+            it.tasks.findByName("publish") != null
+        }.joinToString(";") { it.name }
+        println(publishProjects)
+    }
+}
