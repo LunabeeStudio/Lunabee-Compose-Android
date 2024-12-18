@@ -45,7 +45,10 @@ object AndroidConfig {
     const val LBCUIFIELD_VERSION: String = "1.2.0"
     const val LBCIMAGE_VERSION: String = "1.2.0"
     const val LBCGLANCE_VERSION: String = "1.1.0"
-    const val LBCPRESENTER_VERSION: String = "1.0.1"
+    const val LBCPRESENTER_VERSION: String = "1.0.2-cmp-testing"
+
+    const val LBCCORE_CMP_VERSION: String = "0.0.1-cmp-testing"
+    const val LBCIMAGE_CMP_VERSION: String = "0.0.1-cmp-testing"
 
     val JDK_VERSION: JavaVersion = JavaVersion.VERSION_17
     val JVM_TARGET: JvmTarget = JvmTarget.JVM_17

@@ -8,10 +8,12 @@
 
 # Do not remove, use as "id" instead of alias, this is why it is not detected.
 compose-plugin = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 dagger-hilt = { id = "com.google.dagger.hilt.android", version.ref = "dagger-hilt" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+
 
 [versions]
 
@@ -39,8 +41,11 @@ androidx-navigation = "2.8.3"
 androidx-test-runner = "1.6.2"
 android-tools-desugar_jdk_libs = "2.1.2"
 coil = "2.7.0"
+coil3 = "3.0.3"
+compose = "1.7.0"
 compose-bom = "2024.10.01"
 detekt = "1.23.7"
+dokka = "2.0.0-Beta"
 google-android-material = "1.12.0"
 ##                   ⬆ = "1.13.0-alpha01"
 ##                   ⬆ = "1.13.0-alpha02"
@@ -49,10 +54,12 @@ google-android-material = "1.12.0"
 ##                   ⬆ = "1.13.0-alpha05"
 ##                   ⬆ = "1.13.0-alpha06"
 ##                   ⬆ = "1.13.0-alpha07"
+jetbrains-viewmodel = "2.8.3"
 junit-junit = "4.13.2"
 kotlin = "2.0.21"
 ##  ⬆ = "2.1.0-Beta1"
 ##  ⬆ = "2.1.0-Beta2"
+ktor = "3.0.1"
 zoomable = "1.6.2"
 ##    ⬆ = "1.7.0-beta01"
 ##    ⬆ = "1.7.0-beta02"
@@ -83,6 +90,10 @@ android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", ve
 androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 coil-compose-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+coil3 = { group = "io.coil-kt.coil3", name = "coil", version.ref = "coil3" }
+coil3-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
+coil3-compose-svg = { group = "io.coil-kt.coil3", name = "coil-svg", version.ref = "coil3" }
+coil3-network = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil3" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
@@ -94,15 +105,18 @@ compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4
 compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 desugarJdk = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "android-tools-desugar_jdk_libs" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
+dokka-plugin = { group = "org.jetbrains.dokka", name = "dokka-gradle-plugin", version.ref = "dokka" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycle-viewmodel-android" }
 dagger-hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "dagger-hilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
 dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger-hilt" }
+jetbrains-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "jetbrains-viewmodel" }
 junit = { group = "junit", name = "junit", version.ref = "junit-junit" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit", version.ref = "kotlin" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 material = { group = "com.google.android.material", name = "material", version.ref = "google-android-material" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable" }

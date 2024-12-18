@@ -27,15 +27,17 @@ import studio.lunabee.library.VersionTask
 import java.net.URI
 
 enum class PublishType {
-    Android, Java
+    Android, Java, Multiplatform
 }
 
 plugins {
     `maven-publish`
     signing
+    id("org.jetbrains.dokka")
 }
 
 val publishType: PublishType = when {
+    project.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") -> PublishType.Multiplatform
     project.plugins.hasPlugin("android-library") -> PublishType.Android
     project.plugins.hasPlugin("java-library") -> PublishType.Java
     else -> error("Cannot determine the type of publication")
@@ -87,11 +89,19 @@ fun PublishingExtension.setupPublication() {
                     setPom()
                 }
             }
+
             PublishType.Java -> create<MavenPublication>(project.name) {
                 afterEvaluate { // version is set in project, so use after evaluate
                     setProjectDetails()
                     setJavaArtifacts()
                     setPom()
+                }
+            }
+
+            PublishType.Multiplatform -> create<MavenPublication>(project.name) {
+                afterEvaluate {
+                    setMultiplatformProjectDetails()
+                    setMultiplatformArtifacts()
                 }
             }
         }
@@ -105,6 +115,13 @@ fun PublishingExtension.setupPublication() {
  * - version will be set in each submodule gradle file
  */
 fun MavenPublication.setProjectDetails() {
+    groupId = AndroidConfig.GROUP_ID
+    artifactId = project.name
+    version = project.version.toString()
+}
+
+fun MavenPublication.setMultiplatformProjectDetails() {
+    from(components["kotlin"])
     groupId = AndroidConfig.GROUP_ID
     artifactId = project.name
     version = project.version.toString()
@@ -176,7 +193,8 @@ private val Project.android: LibraryExtension
  * - aar
  */
 fun MavenPublication.setAndroidArtifacts() {
-    val mainSourceSets = (project.android.sourceSets.getByName("main").kotlin as DefaultAndroidSourceDirectorySet).srcDirs
+    val mainSourceSets =
+        (project.android.sourceSets.getByName("main").kotlin as DefaultAndroidSourceDirectorySet).srcDirs
     val sourceJar by project.tasks.registering(Jar::class) {
         archiveClassifier.set("sources")
         from(mainSourceSets)
@@ -197,6 +215,18 @@ fun MavenPublication.setAndroidArtifacts() {
             dependsOn("bundleReleaseAar")
         }
     }
+}
+
+fun MavenPublication.setMultiplatformArtifacts() {
+    val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+
+    val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+        dependsOn(dokkaHtml)
+        archiveClassifier.set("javadoc")
+        from(dokkaHtml.outputDirectory)
+    }
+
+    artifact(javadocJar)
 }
 
 /**
@@ -227,9 +257,12 @@ afterEvaluate {
             PublishType.Android -> dependsOn(
                 tasks.named("bundleReleaseAar"),
             )
+
             PublishType.Java -> dependsOn(
                 tasks.withType(Jar::class.java),
             )
+
+            PublishType.Multiplatform -> {}
         }
     }
 }

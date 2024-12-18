@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel>
+      <module name="Lunabee_Compose.app" target="17" />
+      <module name="Lunabee_Compose.buildSrc" target="21" />
+      <module name="Lunabee_Compose.buildSrc.main" target="21" />
+      <module name="Lunabee_Compose.buildSrc.test" target="21" />
+      <module name="Lunabee_Compose.lbcaccessibility" target="17" />
+      <module name="Lunabee_Compose.lbcandroidtest" target="17" />
+      <module name="Lunabee_Compose.lbccore" target="17" />
+      <module name="Lunabee_Compose.lbccore-cmp" target="17" />
+      <module name="Lunabee_Compose.lbccrop" target="17" />
+      <module name="Lunabee_Compose.lbcfoundation" target="17" />
+      <module name="Lunabee_Compose.lbcglance" target="17" />
+      <module name="Lunabee_Compose.lbchaptic" target="17" />
+      <module name="Lunabee_Compose.lbcimage" target="17" />
+      <module name="Lunabee_Compose.lbcimage-cmp" target="17" />
+      <module name="Lunabee_Compose.lbcpresenter" target="17" />
+      <module name="Lunabee_Compose.lbctheme" target="17" />
+      <module name="Lunabee_Compose.lbcuifield" target="17" />
+      <module name="Lunabee_Compose.material-color-utilities" target="17" />
+      <module name="Lunabee_Compose.material-color-utilities.main" target="17" />
+      <module name="Lunabee_Compose.material-color-utilities.test" target="17" />
+      <module name="Lunabee_Compose.webapp" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>

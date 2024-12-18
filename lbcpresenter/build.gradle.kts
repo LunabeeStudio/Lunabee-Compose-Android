@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 /*
  * Copyright (c) 2024 Lunabee Studio
  *
@@ -20,8 +22,9 @@
  */
 
 plugins {
-    id("lunabee.android-library-conventions")
+    id("lunabee.multiplatform-library-conventions")
     id("lunabee.library-publish-conventions")
+    alias(libs.plugins.compose)
 }
 
 android {
@@ -31,21 +34,36 @@ android {
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-    kotlinOptions.freeCompilerArgs += "-Xcontext-receivers"
 }
 
 description = "Way to create screens in android replacing the MVVM pattern"
 version = AndroidConfig.LBCPRESENTER_VERSION
 
-dependencies {
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.ui)
-    implementation(libs.compose.material3)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.android)
+kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-receivers")
+        freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+    }
 
-    implementation(project(Modules.LbcCore))
-    implementation(project(Modules.LbcImage))
+    applyDefaultHierarchyTemplate()
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(compose.ui)
+            implementation(compose.runtime)
+            implementation(libs.jetbrains.viewmodel)
+        }
+
+        val webMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        wasmJsMain {
+            dependsOn(webMain)
+        }
+        jsMain {
+            dependsOn(webMain)
+        }
+    }
 }

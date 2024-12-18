@@ -21,10 +21,10 @@
 
 plugins {
     id("de.fayard.refreshVersions") version "0.60.5"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
@@ -34,7 +34,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Lunabee Compose"
+rootProject.name = "Lunabee_Compose"
 
 include("app")
 include(":lbcaccessibility")
@@ -50,3 +50,6 @@ include(":lbctheme")
 include(":lbcuifield")
 include(":lbcpresenter")
 include(":material-color-utilities")
+include("webapp")
+include(":lbccore-cmp")
+include(":lbcimage-cmp")

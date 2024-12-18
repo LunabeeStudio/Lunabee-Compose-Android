@@ -7,6 +7,11 @@ to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
 
+### Multiplatform
+
+- Add multiplatform equivalent of LbcCore and LbcImage for multiplatform projects
+- Add webapp project for testing multiplatform elements
+
 ### LbcUiField
 
 #### Fixed

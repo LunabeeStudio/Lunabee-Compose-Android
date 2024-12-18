@@ -86,7 +86,8 @@ class LbcTextSpecTest {
         val expectedTestArgs = composeTestRule
             .activity
             .getString(studio.lunabee.compose.core.test.R.string.test_args, stringParam, intParam)
-        val actualTestArgs = LbcTextSpec.StringResource(id = studio.lunabee.compose.core.test.R.string.test_args, stringParam, intParam)
+        val actualTestArgs =
+            LbcTextSpec.StringResource(id = studio.lunabee.compose.core.test.R.string.test_args, stringParam, intParam)
 
         assertEquals(expectedTest, actualTest.string(context))
         assertEquals(expectedTestArgs, actualTestArgs.string(context))
@@ -112,7 +113,11 @@ class LbcTextSpecTest {
             stringParam,
             intParam,
         )
-        val actualTestArgs = LbcTextSpec.StringResource(studio.lunabee.compose.core.test.R.string.test_args, stringParamTextSpec, intParam)
+        val actualTestArgs = LbcTextSpec.StringResource(
+            studio.lunabee.compose.core.test.R.string.test_args,
+            stringParamTextSpec,
+            intParam,
+        )
 
         assertEquals(expectedTestArgs, actualTestArgs.string(context))
         assertEquals(AnnotatedString(expectedTestArgs), actualTestArgs.annotated(context))
@@ -128,13 +133,15 @@ class LbcTextSpecTest {
             .activity
             .resources
             .getQuantityString(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 1, 1)
-        val actualTestOne = LbcTextSpec.PluralsResource(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 1, 1)
+        val actualTestOne =
+            LbcTextSpec.PluralsResource(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 1, 1)
 
         val expectedTestMany = composeTestRule
             .activity
             .resources
             .getQuantityString(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 2, 2)
-        val actualTestMany = LbcTextSpec.PluralsResource(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 2, 2)
+        val actualTestMany =
+            LbcTextSpec.PluralsResource(studio.lunabee.compose.core.test.R.plurals.test_args_plural, 2, 2)
 
         assertEquals(expectedTestOne, actualTestOne.string(context))
         assertEquals(expectedTestMany, actualTestMany.string(context))
